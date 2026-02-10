@@ -23,5 +23,19 @@ pipeline {
                 
             }
         }
+
+        stage("Test"){
+            steps{
+                sh"""
+                if [-f build/index.html], then
+                    echo 'Tests passed'
+                esle
+                    echo 'Test Failed'
+                    exit 1
+                fi
+
+                """
+            }
+        }
     }
 }
