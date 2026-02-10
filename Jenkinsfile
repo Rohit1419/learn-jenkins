@@ -25,14 +25,17 @@ pipeline {
         }
 
         stage("Test"){
+            agent{
+                docker{
+                    image 'node:24-alpine'
+                    reuseNode true
+                }
+            }
             steps{
                 sh"""
-                if [-f build/index.html], then
-                    echo 'Tests passed'
-                esle
-                    echo 'Test Failed'
-                    exit 1
-                fi
+                test -f build/index.html
+                echo "File exists, running tests..."
+                npm test
 
                 """
             }
