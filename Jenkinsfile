@@ -11,13 +11,13 @@ pipeline {
                 }
             }
             steps {
-                sh """
-                ls -la 
-                node -v
-                npm -v
-                npm ci
-                npm run build
-                ls -la
+                    sh """
+                    ls -la 
+                    node -v
+                    npm -v
+                    npm ci
+                    npm run build
+                    ls -la
                 
                 """
                 
@@ -33,9 +33,26 @@ pipeline {
             }
             steps{
                 sh"""
-                test -f build/index.html
-                echo "File exists, running tests..."
-                npm test
+                    test -f build/index.html
+                    echo "File exists, running tests..."
+                    npm test
+
+                """
+            }
+        }
+
+                stage("E2E Test"){
+            agent{
+                docker{
+                    image 'mcr.microsoft.com/playwright:v1.58.2-noble'
+                    reuseNode true
+                }
+            }
+            steps{
+                sh"""
+                    npm i -g serve 
+                    serve -s build 
+                    npx playwright test 
 
                 """
             }
